@@ -1,0 +1,7 @@
+# 开发期依赖（跑测试、跑静态检查时用；部署不需要）
+# 安装：uv pip install -r requirements-dev.txt
+-r requirements.txt
+
+pytest>=8.0
+pytest-asyncio>=0.24
+ruff>=0.6

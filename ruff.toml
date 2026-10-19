@@ -1,0 +1,29 @@
+# 静态检查配置（ruff）
+# 用法：
+#   .venv\Scripts\ruff.exe check .           只检查
+#   .venv\Scripts\ruff.exe check . --fix     自动修可修的
+#   .venv\Scripts\ruff.exe format .          格式化
+
+target-version = "py312"
+line-length = 120
+
+extend-exclude = [
+    ".venv",
+    "customer-service-frontend",
+    "db",
+]
+
+[lint]
+# E/W 风格、F 真实错误、I 导入顺序、UP 语法现代化、B 常见陷阱
+select = ["E", "F", "W", "I", "UP", "B"]
+
+ignore = [
+    # 中文注释和提示词模板本身很长，强制换行反而难读
+    "E501",
+    # FastAPI 的 Depends()/Query() 作为默认参数是官方惯用写法
+    "B008",
+    # str + Enum 有意保留：既能当字符串比较，又保留枚举语义
+    "UP042",
+    # 按命令子类动态取属性（hasattr 已做保护）
+    "B009",
+]

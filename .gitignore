@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 数据库（可随时用 seed_data.py 重新生成）
+*.db
+*.db-journal
+
+# Node
+node_modules/
+dist/
+
+# IDE
+.idea/
+.vscode/
+
+# 环境变量（含 API Key，不要提交）
+.env
+
+# 日志
+*.log

@@ -1,0 +1,26 @@
+# 电商小二 —— 统一依赖清单
+# 两个后端（电商中台 + 智能客服）共用这一个虚拟环境，全部依赖合并在此。
+# 安装：uv pip install -r requirements.txt   （或 pip install -r requirements.txt）
+
+# --- Web 框架 ---
+fastapi[standard]>=0.136.0
+uvicorn>=0.44.0
+
+# --- 数据库（MySQL 主用，SQLite 兜底）---
+sqlalchemy[asyncio]>=2.0.49
+greenlet>=3.0
+aiomysql>=0.3.2
+pymysql>=1.1.1
+aiosqlite>=0.22.1
+cryptography>=46.0.7
+
+# --- 大模型与 HTTP ---
+openai>=1.60.0
+httpx>=0.28.1
+
+# --- 配置与模板 ---
+pydantic>=2.13.4
+pydantic-settings>=2.13.1
+pyyaml>=6.0.3
+jinja2>=3.1.6
+python-dotenv>=1.2.2

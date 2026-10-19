@@ -1,0 +1,111 @@
+## 任务说明
+你的任务是分析当前对话上下文，并生成一个 TurnPlan JSON。
+
+TurnPlan 顶层只允许以下三个字段：
+- `task`
+- `knowledge`
+- `chitchat`
+
+规则：
+- 这三个字段的值必须是 JSON 对象或 null。
+- 请根据用户真实表达的意图生成结果。
+- 如果用户同时表达了多个意图，可以同时填写多个轨道。
+- 后续执行引擎一次只能处理一个轨道；如果你输出多个轨道，系统会再向用户澄清先处理哪一个。
+- 不要输出额外字段。
+- 只输出合法 JSON，不要输出 markdown。
+- 最终答案只能是 JSON 文本本身，不要使用 Markdown 代码块包裹，例如以三个反引号和 json 开头的结构。
+
+---
+
+## Task 结构
+当用户是在办理业务时，填写 `task`：
+
+Task 对象示例：
+{
+  "commands": [
+    {"command": "start_flow", "flow": "<flow_id>"},
+    {"command": "resume_flow", "flow": "<flow_id>"},
+    {"command": "cancel_flow", "commands": []},
+    {"command": "set_slots", "slots": {"<slot_name>": "<value>"}}
+  ]
+}
+
+仅允许以下 task commands：
+- `start_flow`
+- `resume_flow`
+- `cancel_flow`
+- `set_slots`
+
+可用 flows：
+{{ available_flows_json }}
+
+重要判断规则：
+- 只有当用户明确表达要办理某个业务时才填 `task`。
+- 如果当前有 active_task，且用户这句话是在补充该任务需要的槽位值，输出 `set_slots`。
+- 如果用户说"取消 / 算了 / 不用了"，且当前有 active_task，输出 `cancel_flow`。
+- 如果用户想回到之前被打断的任务，输出 `resume_flow`。
+- `start_flow` 的 flow 必须是"可用 flows"里存在的 id，不要自己编。
+
+---
+
+## Knowledge 结构
+当用户是在咨询信息时，填写 `knowledge`：
+
+Knowledge 对象示例：
+{
+  "intents": ["<intent>"]
+}
+
+允许的 intent（从下列选项中选择，可以选择一个或多个）：
+{{ knowledge_intents_json }}
+
+重要判断规则：
+- 用户问"怎么退 / 能退吗 / 运费谁出 / 多久到 / 支持七天无理由吗"这类**规则、政策、流程说明**，属于 knowledge。
+- 用户问"我这单现在到哪了 / 我的订单什么状态"这类**查具体某笔业务数据**，属于 task（查订单/查物流）。
+- 用户问某件商品的卖点、参数、材质，属于 knowledge 的 product_info（需要聚焦商品）。
+
+---
+
+## Chitchat 结构
+当用户是在闲聊时，填写 `chitchat`：
+
+Chitchat 对象示例：
+{}
+
+---
+
+## 当前状态
+
+### Active Task
+{{ active_task_json }}
+
+### Interrupted Tasks
+{{ interrupted_tasks_json }}
+
+### Focused Object
+{{ focused_object_json }}
+
+---
+
+## 对话历史
+{{ current_conversation }}
+
+---
+
+## 当前任务
+请根据用户最后一句话生成 TurnPlan：
+"""{{ user_message }}"""
+
+TurnPlan 只允许输出以下形状：
+
+{
+  "task": null,
+  "knowledge": null,
+  "chitchat": null
+}
+
+请根据用户真实意图，把对应字段替换成对象；没有命中的字段保持 null。
+
+不要输出解释。
+不要使用 markdown 代码块。
+你的 TurnPlan：
